@@ -80,6 +80,7 @@
                     <option>الفصل الدراسي الأول</option>
                     <option selected>الفصل الدراسي الثاني</option>
                 </select>
+                <input type="number" id="inTotalGrade" class="p-2 border rounded" placeholder="الدرجة النهائية" onchange="saveSettings()">
             </div>
 
             <div class="border-2 border-dashed border-blue-400 bg-blue-50 rounded-lg p-3 text-center cursor-pointer hover:bg-blue-100 transition relative">
@@ -182,7 +183,8 @@
                 inSection: document.getElementById('inSection').value,
                 inYear: document.getElementById('inYear').value,
                 inTerm: document.getElementById('inTerm').value,
-                inReportTitle: document.getElementById('inReportTitle').value
+                inReportTitle: document.getElementById('inReportTitle').value,
+                inTotalGrade: document.getElementById('inTotalGrade').value
             };
             localStorage.setItem('reportSettings', JSON.stringify(settings));
             alert('تم حفظ البيانات بنجاح ✅');
@@ -345,6 +347,8 @@
             else median = scores[Math.floor(count/2)];
 
             let maxPossible = max > 50 ? 100 : (max > 25 ? 50 : 20);
+            const manualMax = parseFloat(document.getElementById('inTotalGrade').value);
+            if (!isNaN(manualMax) && manualMax > 0) maxPossible = manualMax;
             const passLimit = maxPossible * 0.5;
             const goodThreshold = maxPossible * 0.8; 
             const strengthCount = scores.filter(s => s >= goodThreshold).length;
@@ -383,7 +387,9 @@
                 `<tr><td class="p-1 border-b pr-2">${s.name}</td><td class="p-1 border-b text-center font-bold text-green-700">${s.score}</td></tr>`
             ).join('');
             
-            document.getElementById('tableBottom').innerHTML = [...students].sort((a,b)=>a.score-b.score).slice(0,5).map(s => 
+            document.getElementById('tableBottom').innerHTML = [...students]
+                .filter(s => s.score < goodThreshold)
+                .sort((a,b)=>a.score-b.score).slice(0,5).map(s => 
                 `<tr><td class="p-1 border-b pr-2">${s.name}</td><td class="p-1 border-b text-center font-bold ${s.score<passLimit?'text-red-600':'text-orange-600'}">${s.score}</td></tr>`
             ).join('');
 
