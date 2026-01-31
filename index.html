@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="ar" dir="rtl">
   <head>
@@ -972,7 +973,9 @@
               ? "جيد جداً"
               : meanPerc >= 65
                 ? "جيد"
-                : "متوسط";
+                : meanPerc >= 50
+                  ? "مقبول"
+                  : "ضعيف";
 
         let txt = `المستوى العام للفصل (${perf}) بمتوسط (${d.mean.toFixed(1)}). `;
         if (d.failedCount === 0) txt += `جميع الطلاب اجتازوا المهارات. `;
